@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Confirmado | Dev's Burguer</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+    <!-- Cabeçalho -->
+    <div th:replace="fragments/header :: cabecalho"></div>
+
+
+    <main class="container-confirmacao">
+        <div class="confirmacao-conteudo">
+            <div class="texto-confirmacao">
+                <h1 class="titulo-confirmacao">Uhu! Pedido confirmado</h1>
+                <p class="subtitulo-confirmacao">Agora é só aguardar que logo o seu pedido chegará até você!</p>
+
+                <div class="detalhes-entrega">
+                    <div class="info-entrega">
+                        <span class="icone-entrega local"></span>
+                        <p>Entrega em <strong>Rua João Daniel Martinelli, 102</strong> <br> Farrapos - Porto Alegre, RS</p>
+                    </div>
+
+                    <div class="info-entrega">
+                        <span class="icone-entrega tempo"></span>
+                        <p>Previsão de entrega <br> <strong>20 min - 30 min</strong></p>
+                    </div>
+
+                    <div class="info-entrega">
+                        <span class="icone-entrega pagamento"></span>
+                        <p>Pagamento na entrega <br> <strong>Cartão de Crédito</strong></p>
+                    </div>
+                </div>
+
+                <a href="home.html" class="botao-voltar">Voltar para o início</a>
+            </div>
+
+            <div class="img-confirmacao">
+                <img src="/src/main/resources/static/css/images/img-entrega-final.png" alt="Ilustração de entrega">
+            </div>
+        </div>
+    </main>
+</body>
+</html>
