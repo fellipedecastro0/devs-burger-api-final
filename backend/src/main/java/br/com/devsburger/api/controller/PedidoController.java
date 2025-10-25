@@ -2,11 +2,11 @@ package br.com.devsburger.api.controller;
 import br.com.devsburger.api.dto.AtualizacaoStatusPedidoDTO;
 import br.com.devsburger.api.dto.PedidoRequestDTO;
 import br.com.devsburger.api.entity.Pedido;
+import br.com.devsburger.api.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import br.com.devsburger.api.service.PedidoService;
 
 import java.util.List;
 import java.util.Optional;

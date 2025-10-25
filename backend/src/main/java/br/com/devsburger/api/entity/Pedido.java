@@ -1,6 +1,8 @@
 package br.com.devsburger.api.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +22,10 @@ public class Pedido {
 
     @Column(name = "dt_pedido")
     private LocalDateTime dtPedido;
+
+    @Column(name = "valor_total") // Mapeia para a coluna valor_total no banco
+    private BigDecimal valorTotal;
+
 
     @Enumerated(EnumType.STRING)
     private StatusPedido status;
@@ -71,5 +77,13 @@ public class Pedido {
 
     public void setItens(List<ItemPedido> itens) {
         this.itens = itens;
+    }
+
+    public BigDecimal getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(BigDecimal valorTotal) {
+        this.valorTotal = valorTotal;
     }
 }
