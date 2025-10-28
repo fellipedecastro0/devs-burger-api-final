@@ -15,7 +15,7 @@ public class ItemPedido {
     @Column(name = "preco_unitario")
     private BigDecimal precoUnitario;
 
-    // --- RELACIONAMENTOS ---
+    // RELACIONAMENTOS
 
     // Muitos Itens pertencem a UM Pedido
     @JsonBackReference

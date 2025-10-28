@@ -10,9 +10,6 @@ import java.util.List;
 @Table(name = "pedidos")
 public class Pedido {
 
-    // Importe a anotação: import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +20,7 @@ public class Pedido {
     @Column(name = "dt_pedido")
     private LocalDateTime dtPedido;
 
-    @Column(name = "valor_total") // Mapeia para a coluna valor_total no banco
+    @Column(name = "valor_total")
     private BigDecimal valorTotal;
 
 
@@ -38,7 +35,7 @@ public class Pedido {
     public Pedido() {
     }
 
-    // Getters e Setters (pode usar Alt+Insert para gerar se faltar algum)
+    // Getters e Setters
     public Long getId() {
         return id;
     }

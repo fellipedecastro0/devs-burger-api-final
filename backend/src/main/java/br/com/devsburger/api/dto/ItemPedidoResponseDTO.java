@@ -3,7 +3,7 @@ import java.math.BigDecimal;
 
 
 public record ItemPedidoResponseDTO(
-        String nomeProduto, // Mais útil que o ID para exibição
+        String nomeProduto,
         int quantidade,
         BigDecimal precoUnitario
 ) {}

@@ -1,0 +1,24 @@
+<!--Header Fragment-->
+<header th:fragment="cabecalho" class="container-cabecalho">
+    <div class="container cabecalho">
+
+
+        <!-- Logo -->
+         <div class="logo-area">
+            <a th:href="@{/}">
+                <img th:src="@{/css/images/logo.png}" alt="Logo da Hambúrgueria Dev's Burguer" class="logo">
+            </a>
+         </div>
+
+         <!-- Icons -->
+          <div class="cabecalho-acao">
+            <div class="location">
+                <i class="ph-map-pin"></i>
+                <span>Brasília, DF</span>
+            </div>
+            <a th:href="@{/checkout}" class="cart-btn">
+                <i class="ph-shopping-cart"></i>
+            </a>
+          </div>
+    </div>
+</header>

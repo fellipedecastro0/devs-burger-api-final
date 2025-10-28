@@ -16,7 +16,7 @@ import java.util.Optional;
 public class PedidoController {
 
     @Autowired
-    private PedidoService pedidoService; // Agora injetamos o Service, e não o Repository!
+    private PedidoService pedidoService;
 
     @PostMapping
     public ResponseEntity<Pedido> criar(@RequestBody PedidoRequestDTO dto) {
@@ -42,24 +42,21 @@ public class PedidoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        // Chamamos o service e guardamos a resposta (true ou false)
         boolean foiDeletado = pedidoService.deletarPedido(id);
 
         if (foiDeletado) {
-            // Se foi deletado com sucesso, retornamos a resposta padrão para delete: 204 No Content
+
             return ResponseEntity.noContent().build();
         } else {
-            // Se o service retornou false, significa que não encontrou o pedido. Retornamos 404.
             return ResponseEntity.notFound().build();
         }
     }
 
-    // Adicione este método dentro da classe PedidoController
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<Pedido> atualizarStatus(@PathVariable Long id, @RequestBody AtualizacaoStatusPedidoDTO dto) {
         return pedidoService.atualizarStatus(id, dto.status())
-                .map(pedidoAtualizado -> ResponseEntity.ok(pedidoAtualizado)) // Se o service encontrou e atualizou, retorna 200 OK
-                .orElse(ResponseEntity.notFound().build()); // Se não encontrou, retorna 404 Not Found
+                .map(pedidoAtualizado -> ResponseEntity.ok(pedidoAtualizado))
+                .orElse(ResponseEntity.notFound().build());
     }
 }

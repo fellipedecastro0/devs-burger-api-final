@@ -8,7 +8,6 @@ import br.com.devsburger.api.entity.ItemPedido;
 import br.com.devsburger.api.entity.Pedido;
 import br.com.devsburger.api.entity.Produto;
 import br.com.devsburger.api.entity.StatusPedido;
-import br.com.devsburger.api.repository.ItemPedidoRepository;
 import br.com.devsburger.api.repository.PedidoRepository;
 import br.com.devsburger.api.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,7 +30,6 @@ public class PedidoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    // --- SEU MÉTODO criarPedido ORIGINAL (COM SUGESTÃO DE MELHORIA E CÁLCULO DO TOTAL) ---
     @Transactional
     public Pedido criarPedido(PedidoRequestDTO dto) {
         Pedido pedido = new Pedido();
@@ -42,39 +40,34 @@ public class PedidoService {
         List<ItemPedido> itensDoPedido = new ArrayList<>();
         BigDecimal valorTotalCalculado = BigDecimal.ZERO;
 
-        // Itera sobre os itens recebidos no DTO
         for (ItemPedidoRequestDTO itemDTO : dto.itens()) {
-            // Busca o produto no banco
             Produto produto = produtoRepository.findById(itemDTO.produtoId())
                     .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + itemDTO.produtoId()));
 
-            // Cria a entidade ItemPedido
             ItemPedido itemPedido = new ItemPedido();
             itemPedido.setProduto(produto);
             itemPedido.setQuantidade(itemDTO.quantidade());
-            itemPedido.setPrecoUnitario(produto.getPreco()); // Pega o preço ATUAL do produto
-            itemPedido.setPedido(pedido); // Associa este item ao pedido que estamos criando
+            itemPedido.setPrecoUnitario(produto.getPreco());
+            itemPedido.setPedido(pedido);
 
-            itensDoPedido.add(itemPedido); // Adiciona na lista temporária
+            itensDoPedido.add(itemPedido);
 
-            // Calcula o subtotal deste item e soma ao total geral
             valorTotalCalculado = valorTotalCalculado.add(
                     produto.getPreco().multiply(new BigDecimal(itemDTO.quantidade()))
             );
         }
 
-        // Associa a lista de entidades ItemPedido ao Pedido
+
         pedido.setItens(itensDoPedido);
-        // Define o valor total calculado na entidade Pedido (IMPORTANTE para a Opção A)
+
         pedido.setValorTotal(valorTotalCalculado);
 
-        // Salva o Pedido. Se CascadeType.ALL estiver configurado, os ItensPedido serão salvos juntos.
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
         return pedidoSalvo;
     }
 
 
-    // --- SEUS MÉTODOS EXISTENTES ---
+    //MÉTODOS EXISTENTES
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
@@ -102,8 +95,6 @@ public class PedidoService {
     }
 
 
-    // --- ADICIONE ESTES NOVOS MÉTODOS DE CONVERSÃO ---
-
     // Método PRIVADO para converter ItemPedido (Entidade) -> ItemPedidoResponseDTO
     private ItemPedidoResponseDTO converterParaItemResponseDTO(ItemPedido itemPedido) {
         // Verifica se o produto associado existe para evitar NullPointerException
@@ -121,11 +112,10 @@ public class PedidoService {
     // Método PÚBLICO para converter Pedido (Entidade) -> PedidoResponseDTO
     public PedidoResponseDTO converterParaResponseDTO(Pedido pedido) {
         // Converte a lista de entidades ItemPedido para uma lista de DTOs
-        List<ItemPedidoResponseDTO> itensDTO = pedido.getItens() // Pega a lista de itens da entidade Pedido
+        List<ItemPedidoResponseDTO> itensDTO = pedido.getItens()
                 .stream() // Inicia o processamento da lista
                 .map(this::converterParaItemResponseDTO) // Aplica o método de conversão a cada item
-                .toList(); // Coleta os resultados em uma nova lista (Java 16+)
-        // Se usar Java < 16, substitua .toList() por: .collect(Collectors.toList());
+                .toList();
 
         // Retorna um novo DTO de resposta preenchido com os dados da entidade Pedido
         return new PedidoResponseDTO(
@@ -133,25 +123,24 @@ public class PedidoService {
                 pedido.getNomeCliente(),
                 pedido.getDtPedido(),
                 pedido.getStatus(),
-                // Pega o valor total que foi calculado e salvo na entidade Pedido (Opção A)
                 pedido.getValorTotal() != null ? pedido.getValorTotal() : BigDecimal.ZERO,
-                itensDTO // Inclui a lista de DTOs dos itens
+                itensDTO
         );
     }
 
     // Método PÚBLICO que busca por ID e já retorna o DTO (para o PedidoWebController usar)
     public Optional<PedidoResponseDTO> buscarPorIdComoDTO(Long id) {
-        return pedidoRepository.findById(id) // Busca a entidade Pedido pelo ID
-                .map(this::converterParaResponseDTO); // Se encontrar (Optional não vazio), aplica a conversão para DTO
+        return pedidoRepository.findById(id)
+                .map(this::converterParaResponseDTO);
         // Se não encontrar, retorna um Optional vazio
     }
 
-    // Método PÚBLICO opcional: Lista todos os pedidos já convertidos para DTOs
+    //  Lista todos os pedidos já convertidos para DTOs
     public List<PedidoResponseDTO> listarTodosComoDTO() {
-        return pedidoRepository.findAll() // Busca todas as entidades Pedido
-                .stream() // Inicia o processamento da lista
-                .map(this::converterParaResponseDTO) // Aplica a conversão a cada Pedido
-                .toList(); // Coleta em uma lista de DTOs (Java 16+)
+        return pedidoRepository.findAll()
+                .stream()
+                .map(this::converterParaResponseDTO)
+                .toList();
     }
 
 
