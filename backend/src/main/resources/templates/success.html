@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompanhamento Pedido | Dev's Burguer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/phosphor-icons@1.4.2/src/css/phosphor.css">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div th:replace="~{fragments/header :: cabecalho}"></div>
+
+<main class="container-confirmacao">
+    <div class="confirmacao-conteudo">
+
+        <div class="texto-confirmacao">
+            <h1 class="titulo-confirmacao">Uhu! Pedido confirmado</h1>
+            <p class="subtitulo-confirmacao">Agora é só aguardar que logo o seu lanche chegará até você!</p>
+
+            <section class="timeline">
+
+                <div class="passo" th:classappend="${pedido.status.name() == 'EM_PREPARO' || pedido.status.name() == 'PRONTO' || pedido.status.name() == 'ENTREGUE' ? 'ativo' : ''}">
+                    <div class="icone-status">
+                        <i class="ph-kitchen"></i>
+                    </div>
+                    <div class="detalhes">
+                        <h3>Em Preparo</h3>
+                        <p>Estamos separando os ingredientes e preparando seu lanche.</p>
+                    </div>
+                </div>
+
+                <div class="passo" th:classappend="${pedido.status.name() == 'PRONTO' || pedido.status.name() == 'ENTREGUE' ? 'ativo' : ''}">
+                    <div class="icone-status">
+                        <i class="ph-motorcycle"></i>
+                    </div>
+                    <div class="detalhes">
+                        <h3>Saiu para Entrega</h3>
+                        <p>Seu pedido está a caminho! Previsão de chegada: 20 - 30 min.</p>
+                    </div>
+                </div>
+
+                <div class="passo" th:classappend="${pedido.status.name() == 'ENTREGUE' ? 'ativo' : ''}">
+                    <div class="icone-status">
+                        <i class="ph-check-circle"></i>
+                    </div>
+                    <div class="detalhes">
+                        <h3>Entregue</h3>
+                        <p>Aproveite seu Dev's Burguer! Obrigado por comprar conosco.</p>
+                    </div>
+                </div>
+
+                <div class="passo cancelado" th:if="${pedido.status.name() == 'CANCELADO'}">
+                    <div class="icone-status">
+                        <i class="ph-x-circle"></i>
+                    </div>
+                    <div class="detalhes">
+                        <h3>Pedido Cancelado</h3>
+                        <p>Seu pedido foi cancelado. Entre em contato se precisar de ajuda.</p>
+                    </div>
+                </div>
+
+                <div class="detalhes-entrega">
+                    <div class="info-entrega">
+                        <i class="ph-map-pin"></i>
+                        <p th:text="${pedido.enderecoCompleto}">Entrega em <strong>Rua João Daniel Martinelli, 102</strong> <br> Farrapos - Porto Alegre, RS</p>
+                    </div>
+
+                    <div class="info-entrega" th:unless="${pedido.status.name() == 'ENTREGUE' || pedido.status.name() == 'CANCELADO'}">
+                        <i class="ph-clock"></i>
+                        <p>Previsão de entrega <br> <strong>20 min - 30 min</strong></p>
+                    </div>
+
+                    <div class="info-entrega">
+                        <i class="ph-credit-card"></i>
+                        <p th:text="'Pagamento na entrega: ' + ${pedido.formaPagamento}">Pagamento na entrega <br> <strong>Cartão de Crédito</strong></p>
+                    </div>
+                </div>
+            </section>
+
+            <a th:href="@{/home}" class="botao-voltar">Voltar para o início</a>
+        </div>
+
+        <div class="img-confirmacao">
+            <img th:src="@{/css/images/img-entrega-final.png}" alt="Ilustração de entrega">
+        </div>
+    </div>
+</main>
+</body>
+</html>

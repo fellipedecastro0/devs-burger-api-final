@@ -124,7 +124,16 @@ public class PedidoService {
                 pedido.getDtPedido(),
                 pedido.getStatus(),
                 pedido.getValorTotal() != null ? pedido.getValorTotal() : BigDecimal.ZERO,
-                itensDTO
+                itensDTO,
+                pedido.getSubtotal() != null ? pedido.getSubtotal() : BigDecimal.ZERO, // subtotal
+                pedido.getFrete() != null ? pedido.getFrete() : BigDecimal.ZERO,     // frete
+                pedido.getValorTotal() != null ? pedido.getValorTotal() : BigDecimal.ZERO, // total
+                pedido.getCep(),
+                pedido.getEndereco(),
+                pedido.getNumero(),
+                pedido.getBairro(),
+                pedido.getCidade(),
+                pedido.getEstado()
         );
     }
 
