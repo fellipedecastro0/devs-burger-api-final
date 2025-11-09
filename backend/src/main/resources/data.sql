@@ -1,0 +1,15 @@
+INSERT INTO produtos (nome, preco, imagem_url) VALUES
+('Bug Clássico', 27.90, 'img1.png'),
+('Stack de Bacon', 29.90,'img2.png'),
+('Chicken.dev', 27.90,'img3.png'),
+('Hot Jalapeño', 28.50,'img4.png'),
+('Green Code', 26.90,'img5.png'),
+('Double Stack', 33.90,'img6.png'),
+('Dev Onion', 26.90,'img7.png'),
+('Egg Byte', 26.90,'img8.png'),
+('Boss Costela', 32.90,'img9.png'),
+('Dev Fries', 11.90,'img10.png'),
+('Crunchy Wings', 13.90,'img11.png'),
+('Chicken Bytes', 12.90,'img12.png'),
+('Refrigerante Lata', 8.90,'img13.png'),
+('Shake Code', 12.90,'img14.png');

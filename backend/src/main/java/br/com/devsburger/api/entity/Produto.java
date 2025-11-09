@@ -10,6 +10,7 @@ public class Produto {
     private Long id;
     private String nome;
     private BigDecimal preco;
+    private String imagemUrl;
 
     // Construtor vazio (obrigatório pelo JPA)
     public Produto() {
@@ -38,6 +39,13 @@ public class Produto {
 
     public void setPreco(BigDecimal preco) {
         this.preco = preco;
+    }
+    public String getImagemUrl() {
+        return imagemUrl;
+    }
+
+    public void setImagemUrl(String imagemUrl) {
+        this.imagemUrl = imagemUrl;
     }
 
 }
