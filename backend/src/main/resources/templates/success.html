@@ -6,7 +6,6 @@
     <title>Acompanhamento Pedido | Dev's Burguer</title>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/phosphor-icons@1.4.2/src/css/phosphor.css">
-
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
@@ -62,10 +61,15 @@
                     </div>
                 </div>
 
+
                 <div class="detalhes-entrega">
                     <div class="info-entrega">
                         <i class="ph-map-pin"></i>
-                        <p th:text="${pedido.enderecoCompleto}">Entrega em <strong>Rua João Daniel Martinelli, 102</strong> <br> Farrapos - Porto Alegre, RS</p>
+                        <p>
+                            Entrega em <strong th:text="${pedido.endereco} + ', ' + ${pedido.numero}">Rua, 102</strong>
+                            <br>
+                            <span th:text="${pedido.bairro} + ' - ' + ${pedido.cidade} + ', ' + ${pedido.estado}">Bairro - Cidade, RS</span>
+                        </p>
                     </div>
 
                     <div class="info-entrega" th:unless="${pedido.status.name() == 'ENTREGUE' || pedido.status.name() == 'CANCELADO'}">
@@ -75,16 +79,16 @@
 
                     <div class="info-entrega">
                         <i class="ph-credit-card"></i>
-                        <p th:text="'Pagamento na entrega: ' + ${pedido.formaPagamento}">Pagamento na entrega <br> <strong>Cartão de Crédito</strong></p>
+                        <p>Pagamento na entrega <br> <strong>Pagamento na Entrega</strong></p>
                     </div>
                 </div>
             </section>
 
-            <a th:href="@{/home}" class="botao-voltar">Voltar para o início</a>
+            <a th:href="@{/}" class="botao-voltar">Voltar para o início</a>
         </div>
 
         <div class="img-confirmacao">
-            <img th:src="@{/css/images/img-entrega-final.png}" alt="Ilustração de entrega">
+            <img th:src="@{/images/img-entrega-final.png}" alt="Ilustração de entrega">
         </div>
     </div>
 </main>

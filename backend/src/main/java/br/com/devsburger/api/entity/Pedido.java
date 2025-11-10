@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -52,8 +53,8 @@ public class Pedido {
     private StatusPedido status;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemPedido> itens;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private List<ItemPedido> itens = new ArrayList<>();;
 
     // Construtor vazio (obrigatório pelo JPA)
     public Pedido() {

@@ -1,13 +1,11 @@
 package br.com.devsburger.api.service;
 
-import br.com.devsburger.api.dto.ItemPedidoRequestDTO;
-import br.com.devsburger.api.dto.PedidoRequestDTO;
-import br.com.devsburger.api.dto.ItemPedidoResponseDTO;
-import br.com.devsburger.api.dto.PedidoResponseDTO;
+import br.com.devsburger.api.dto.*;
 import br.com.devsburger.api.entity.ItemPedido;
 import br.com.devsburger.api.entity.Pedido;
 import br.com.devsburger.api.entity.Produto;
 import br.com.devsburger.api.entity.StatusPedido;
+import br.com.devsburger.api.repository.ItemPedidoRepository;
 import br.com.devsburger.api.repository.PedidoRepository;
 import br.com.devsburger.api.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import jakarta.servlet.http.HttpSession; // <<< ADICIONADO
 
 
 @Service
@@ -29,6 +28,100 @@ public class PedidoService {
 
     @Autowired
     private ProdutoRepository produtoRepository;
+
+    @Autowired
+    private ItemPedidoRepository itemPedidoRepository;
+
+    @Transactional
+    public Pedido adicionarItemAoCarrinho(Long produtoId, HttpSession session) {
+
+        // 1. Acha o produto
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado: " + produtoId));
+
+        // 2. Pega a etiqueta "pedidoId" da Sessão
+        Long pedidoId = (Long) session.getAttribute("pedidoId");
+        Pedido pedido;
+
+        // 3. Se não tem etiqueta (pedidoId == null), é o PRIMEIRO clique.
+        if (pedidoId == null) {
+            // Cria um novo Pedido (carrinho) no banco
+            pedido = new Pedido();
+            pedido.setStatus(StatusPedido.EM_PREPARO);
+            pedido.setDtPedido(LocalDateTime.now());
+            pedido = pedidoRepository.save(pedido);
+            // Cola a etiqueta "pedidoId" na sessão
+            session.setAttribute("pedidoId", pedido.getId());
+
+        } else {
+            // Se JÁ tem etiqueta, TENTA buscar o Pedido no banco
+            Optional<Pedido> pedidoOpt = pedidoRepository.findById(pedidoId);
+
+            // 4. <<< AQUI ESTÁ A CORREÇÃO >>>
+            if (pedidoOpt.isEmpty()) {
+                // BUG: O carrinho "lembra" de um Pedido 1, MAS o banco foi limpo.
+                // SOLUÇÃO: Criamos um novo pedido e "resetamos" a etiqueta na sessão.
+
+                System.out.println("Sessão 'stale' detectada. Criando novo pedido.");
+                pedido = new Pedido(); // Cria um novo
+                pedido.setStatus(StatusPedido.EM_PREPARO);
+                pedido.setDtPedido(LocalDateTime.now());
+                pedido = pedidoRepository.save(pedido); // Salva (ele vai pegar um novo ID)
+
+                // Atualiza a etiqueta na sessão para o NOVO ID.
+                session.setAttribute("pedidoId", pedido.getId());
+
+            } else {
+                // O Pedido foi encontrado. Vida normal.
+                pedido = pedidoOpt.get();
+            }
+        }
+
+        // 5. Agora temos o Pedido. Vamos ver se o produto JÁ está nele.
+        Optional<ItemPedido> itemExistente = pedido.getItens().stream()
+                .filter(item -> item.getProduto().getId().equals(produtoId))
+                .findFirst();
+
+        if (itemExistente.isPresent()) {
+            // Se SIM: Apenas aumenta a quantidade
+            ItemPedido item = itemExistente.get();
+            item.setQuantidade(item.getQuantidade() + 1);
+            itemPedidoRepository.save(item);
+        } else {
+            // Se NÃO: Cria um novo ItemPedido e o adiciona ao Pedido
+            ItemPedido novoItem = new ItemPedido();
+            novoItem.setProduto(produto);
+            novoItem.setQuantidade(1);
+            novoItem.setPrecoUnitario(produto.getPreco());
+            novoItem.setPedido(pedido);
+
+            pedido.getItens().add(novoItem);
+            itemPedidoRepository.save(novoItem);
+        }
+
+        // 6. Recalcula o valor total
+        recalcularValorTotal(pedido);
+
+        // 7. Salva o Pedido (carrinho) atualizado no banco
+        return pedidoRepository.save(pedido);
+    }
+
+    private void recalcularValorTotal(Pedido pedido) {
+        BigDecimal valorTotalCalculado = BigDecimal.ZERO;
+
+        // Itera sobre a lista de itens DENTRO da entidade Pedido
+        for (ItemPedido item : pedido.getItens()) {
+            // Garante que temos dados válidos para calcular
+            if (item.getPrecoUnitario() != null && item.getQuantidade() > 0) {
+                valorTotalCalculado = valorTotalCalculado.add(
+                        item.getPrecoUnitario().multiply(new BigDecimal(item.getQuantidade()))
+                );
+            }
+        }
+
+        pedido.setValorTotal(valorTotalCalculado);
+        pedido.setSubtotal(valorTotalCalculado); // Por enquanto, subtotal = total. Sem frete.
+    }
 
     @Transactional
     public Pedido criarPedido(PedidoRequestDTO dto) {
@@ -95,17 +188,31 @@ public class PedidoService {
     }
 
 
-    // Método PRIVADO para converter ItemPedido (Entidade) -> ItemPedidoResponseDTO
+    // Método  para converter ItemPedido (Entidade) -> ItemPedidoResponseDTO
     private ItemPedidoResponseDTO converterParaItemResponseDTO(ItemPedido itemPedido) {
-        // Verifica se o produto associado existe para evitar NullPointerException
-        String nomeProduto = (itemPedido.getProduto() != null) ? itemPedido.getProduto().getNome() : "Produto Inválido";
-        // Verifica se o preço unitário existe
-        BigDecimal preco = (itemPedido.getPrecoUnitario() != null) ? itemPedido.getPrecoUnitario() : BigDecimal.ZERO;
+
+        // Valores padrão para o caso de algo dar errado
+        String nomeProduto = "Produto Inválido";
+        String imagemUrl = "logo.png"; // Uma imagem padrão, caso o produto não tenha
+        BigDecimal preco = BigDecimal.ZERO;
+
+        // Se o produto existir, pega os dados reais
+        if (itemPedido.getProduto() != null) {
+            nomeProduto = itemPedido.getProduto().getNome();
+            imagemUrl = itemPedido.getProduto().getImagemUrl(); // <<< AQUI, pegamos a imagem
+        }
+
+
+        if (itemPedido.getPrecoUnitario() != null) {
+            preco = itemPedido.getPrecoUnitario();
+        }
+
 
         return new ItemPedidoResponseDTO(
                 nomeProduto,
                 itemPedido.getQuantidade(),
-                preco
+                preco,
+                imagemUrl
         );
     }
 
@@ -150,6 +257,27 @@ public class PedidoService {
                 .stream()
                 .map(this::converterParaResponseDTO)
                 .toList();
+    }
+
+
+    @Transactional
+    public Pedido finalizarPedido(Long pedidoId, PedidoCheckoutDTO dadosCheckout) {
+        // 1. Busca o Pedido (carrinho) que estávamos montando
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado: " + pedidoId));
+
+        // 2. Atualiza o Pedido com os dados do formulário
+        pedido.setCep(dadosCheckout.cep());
+        pedido.setEndereco(dadosCheckout.endereco());
+        pedido.setNumero(dadosCheckout.numero());
+        pedido.setBairro(dadosCheckout.bairro());
+        pedido.setCidade(dadosCheckout.cidade());
+        pedido.setEstado(dadosCheckout.estado());
+
+        pedido.setStatus(StatusPedido.PRONTO);
+
+        // 4. Salva o pedido finalizado no banco
+        return pedidoRepository.save(pedido);
     }
 
 

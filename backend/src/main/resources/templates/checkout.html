@@ -14,7 +14,6 @@
 
     <form th:action="@{/confirmarPedido}" method="post" id="checkout-form">
         <h1>Finalizar Pedido</h1>
-
         <div class="campo">
             <label for="cep">CEP</label>
             <input id="cep" name="cep" class="campo-cep" type="text" required>
@@ -49,20 +48,16 @@
             <p>O pagamento é feito na entrega. Escolha a forma que deseja pagar</p>
             <div class="opcoes-pagamento">
                 <label for="credito" class="opcao-pagamento">
-                    <input type="radio" id="credito" name="formaPagamento" value="CREDITO" required />
-                    <span>Cartão de Crédito</span>
+                    <input type="radio" id="credito" name="formaPagamento" value="CREDITO" /> <span>Cartão de Crédito</span>
                 </label>
                 <label for="debito" class="opcao-pagamento">
-                    <input type="radio" id="debito" name="formaPagamento" value="DEBITO" required />
-                    <span>Cartão de Débito</span>
+                    <input type="radio" id="debito" name="formaPagamento" value="DEBITO" /> <span>Cartão de Débito</span>
                 </label>
                 <label for="dinheiro" class="opcao-pagamento">
-                    <input type="radio" id="dinheiro" name="formaPagamento" value="DINHEIRO" required />
-                    <span>Dinheiro</span>
+                    <input type="radio" id="dinheiro" name="formaPagamento" value="DINHEIRO" /> <span>Dinheiro</span>
                 </label>
             </div>
         </section>
-
     </form>
 
     <div class="resumo">
@@ -73,11 +68,16 @@
         </div>
 
         <div th:unless="${carrinho == null || carrinho.itens.isEmpty()}">
+
             <div class="item-resumo" th:each="item : ${carrinho.itens}">
-                <img th:src="@{'/images/' + ${item.produto.imagem}}" alt="Imagem do produto"/>
+
+                <img th:src="@{/images/{url}(url=${item.imagemUrl})}" alt="Imagem do produto"/>
+
                 <div class="detalhes-item">
-                    <span th:text="${item.produto.nome}">Stake de Bacon</span>
+                    <span th:text="${item.nomeProduto}">Stake de Bacon</span>
+
                     <span class="preco" th:text="${#numbers.formatCurrency(item.precoUnitario)}">R$ 29,90</span>
+
                     <div class="acoes-item">
                         <input type="number" th:value="${item.quantidade}" min="1" disabled />
                         <button type="button" class="btn-remover">REMOVER</button>
@@ -95,7 +95,6 @@
 
             <button type="submit" class="btn-confirmar" form="checkout-form">Confirmar Pedido</button>
         </div>
-
     </div>
 </main>
 </body>
