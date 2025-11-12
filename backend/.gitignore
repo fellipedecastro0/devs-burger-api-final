@@ -1,3 +1,4 @@
+# Arquivos de build do Maven
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -7,14 +8,17 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+
+# Ignorar o .jar do Maven Wrapper (baixar na primeira vez)
 # https://maven.apache.org/wrapper/#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
-# Eclipse m2e generated files
-# Eclipse Core
+# Arquivos gerados pelo Eclipse m2e
 .project
-# JDT-specific (Eclipse Java Development Tools)
+
+# Arquivos específicos do JDT (Eclipse Java)
 .classpath
+
 # Arquivos específicos do IntelliJ IDEA
 .idea/
 *.iml
