@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 
 
 public record ItemPedidoResponseDTO(
+        Long itemPedidoId,
         String nomeProduto,
         int quantidade,
         BigDecimal precoUnitario,

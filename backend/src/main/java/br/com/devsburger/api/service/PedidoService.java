@@ -189,26 +189,28 @@ public class PedidoService {
 
 
     // Método  para converter ItemPedido (Entidade) -> ItemPedidoResponseDTO
+    // Método para converter ItemPedido (Entidade) -> ItemPedidoResponseDTO
     private ItemPedidoResponseDTO converterParaItemResponseDTO(ItemPedido itemPedido) {
 
-        // Valores padrão para o caso de algo dar errado
+        // Valores padrão
         String nomeProduto = "Produto Inválido";
-        String imagemUrl = "logo.png"; // Uma imagem padrão, caso o produto não tenha
+        String imagemUrl = "logo.png";
         BigDecimal preco = BigDecimal.ZERO;
 
         // Se o produto existir, pega os dados reais
         if (itemPedido.getProduto() != null) {
             nomeProduto = itemPedido.getProduto().getNome();
-            imagemUrl = itemPedido.getProduto().getImagemUrl(); // <<< AQUI, pegamos a imagem
+            imagemUrl = itemPedido.getProduto().getImagemUrl();
         }
 
-
+        // Pega o preço (se existir)
         if (itemPedido.getPrecoUnitario() != null) {
             preco = itemPedido.getPrecoUnitario();
         }
 
 
         return new ItemPedidoResponseDTO(
+                itemPedido.getId(),
                 nomeProduto,
                 itemPedido.getQuantidade(),
                 preco,
@@ -280,5 +282,37 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
+    @Transactional
+    public void removerItemDoCarrinho(Long itemPedidoId) {
+
+        // 1. Tenta encontrar o ItemPedido no banco
+        Optional<ItemPedido> itemOpt = itemPedidoRepository.findById(itemPedidoId);
+
+        // 2. Se não encontrar (ex: usuário clicou duas vezes), não faz nada.
+        if (itemOpt.isEmpty()) {
+            System.out.println("Não foi possível remover: Item " + itemPedidoId + " não encontrado.");
+            return;
+        }
+
+        ItemPedido itemParaRemover = itemOpt.get();
+
+        // 3. Pega o "Pedido-pai" (o carrinho) antes de deletar o item
+        Pedido pedido = itemParaRemover.getPedido();
+
+        // 4. Remove o item da lista de itens do "Pedido-pai"
+        // (Isso é crucial para o recalcularValorTotal funcionar)
+        pedido.getItens().remove(itemParaRemover);
+
+        // 5. Deleta o item do banco de dados
+        itemPedidoRepository.delete(itemParaRemover);
+
+        // 6. RECALCULA O TOTAL! (Nós já temos esse método!)
+        recalcularValorTotal(pedido);
+
+        // 7. Salva o "Pedido-pai" com o novo total
+        pedidoRepository.save(pedido);
+
+        System.out.println("Item " + itemPedidoId + " removido. Novo total: " + pedido.getValorTotal());
+    }
 
 }

@@ -127,5 +127,16 @@ public class WebController {
         return "redirect:/success?id=" + pedidoFinalizado.getId();
     }
 
+    @PostMapping("/removerItem")
+    public String removerItemDoCarrinho(@RequestParam("itemPedidoId") Long idDoItem) {
+
+        System.out.println("REMOVENDO ITEM DE ID: " + idDoItem);
+
+        // 1. Chamamos o "mágico" (que vamos criar agora)
+        pedidoService.removerItemDoCarrinho(idDoItem);
+
+        // 2. Redireciona o usuário DE VOLTA para o checkout
+        return "redirect:/checkout";
+    }
 
 }

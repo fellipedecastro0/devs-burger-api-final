@@ -80,7 +80,11 @@
 
                     <div class="acoes-item">
                         <input type="number" th:value="${item.quantidade}" min="1" disabled />
-                        <button type="button" class="btn-remover">REMOVER</button>
+
+                        <form th:action="@{/removerItem}" method="post" style="display: inline;">
+                            <input type="hidden" name="itemPedidoId" th:value="${item.itemPedidoId}" />
+                            <button type="submit" class="btn-remover">REMOVER</button>
+                        </form>
                     </div>
                 </div>
             </div>
