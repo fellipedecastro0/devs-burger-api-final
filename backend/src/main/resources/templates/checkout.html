@@ -79,12 +79,20 @@
                     <span class="preco" th:text="${#numbers.formatCurrency(item.precoUnitario)}">R$ 29,90</span>
 
                     <div class="acoes-item">
-                        <input type="number" th:value="${item.quantidade}" min="1" disabled />
+
+                        <form th:action="@{/atualizarQuantidade}" method="post" class="form-quantidade">
+
+                            <input type="hidden" name="itemPedidoId" th:value="${item.itemPedidoId}" />
+
+                            <input type="number" name="quantidade" th:value="${item.quantidade}" min="1"
+                                   class="input-quantidade"
+                                   onchange="this.form.submit()" /> </form>
 
                         <form th:action="@{/removerItem}" method="post" style="display: inline;">
                             <input type="hidden" name="itemPedidoId" th:value="${item.itemPedidoId}" />
                             <button type="submit" class="btn-remover">REMOVER</button>
                         </form>
+
                     </div>
                 </div>
             </div>

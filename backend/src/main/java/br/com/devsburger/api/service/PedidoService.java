@@ -313,6 +313,36 @@ public class PedidoService {
         pedidoRepository.save(pedido);
 
         System.out.println("Item " + itemPedidoId + " removido. Novo total: " + pedido.getValorTotal());
-    }
 
+    }
+    @Transactional
+    public void atualizarQuantidadeItem(Long itemPedidoId, int novaQuantidade) {
+
+        // 1. Garante que a quantidade não é zero ou negativa.
+        if (novaQuantidade < 1) {
+            // Se for, apenas remove o item.
+            removerItemDoCarrinho(itemPedidoId);
+            return;
+        }
+
+        // 2. Tenta encontrar o ItemPedido no banco
+        ItemPedido item = itemPedidoRepository.findById(itemPedidoId)
+                .orElseThrow(() -> new EntityNotFoundException("Item de pedido não encontrado: " + itemPedidoId));
+
+        // 3. ATUALIZA a quantidade
+        item.setQuantidade(novaQuantidade);
+
+        // 4. Salva o item atualizado
+        itemPedidoRepository.save(item);
+
+        // 5. RECALCULA O TOTAL!
+        // (Pegamos o "Pedido-pai" e chamamos o método que JÁ TEMOS)
+        Pedido pedido = item.getPedido();
+        recalcularValorTotal(pedido);
+
+        // 6. Salva o "Pedido-pai" com o novo total
+        pedidoRepository.save(pedido);
+
+        System.out.println("Item " + itemPedidoId + " atualizado para Qtd: " + novaQuantidade + ". Novo total: " + pedido.getValorTotal());
+    }
 }
