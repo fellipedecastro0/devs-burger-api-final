@@ -3,22 +3,21 @@
     <div class="container cabecalho">
 
 
-        <!-- Logo -->
-         <div class="logo-area">
-            <a th:href="@{/}">
-                <img th:src="@{/images/logo.png}" alt="Logo da Hambúrgueria Dev's Burguer" class="logo">
-            </a>
-         </div>
+        <a href="/" class="logo-link">
+            <h1 class="logo-text">Dev's Burguer</h1>
+        </a>
 
-         <!-- Icons -->
-          <div class="cabecalho-acao">
+        <div class="cabecalho-acao">
+
             <div class="location">
-                <i class="ph ph-map-pin"></i>
+                <ion-icon name="pin"></ion-icon>
                 <span>Brasília, DF</span>
             </div>
-            <a th:href="@{/checkout}" class="cart-btn">
-                <i class="ph ph-shopping-cart"></i>
+
+            <a href="/checkout" class="cart-btn">
+                <ion-icon name="cart"></ion-icon>
             </a>
-          </div>
+
+        </div>
     </div>
 </header>
