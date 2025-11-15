@@ -139,4 +139,18 @@ public class WebController {
         return "redirect:/checkout";
     }
 
+    @PostMapping("/atualizarQuantidade")
+    public String atualizarQuantidade(
+            @RequestParam("itemPedidoId") Long idDoItem,
+            @RequestParam("quantidade") int novaQuantidade) { // <-- Capturamos os DOIS dados
+
+        System.out.println("ATUALIZANDO Item ID: " + idDoItem + " para Quantidade: " + novaQuantidade);
+
+        // 1. Chamamos o "mágico" (que vamos criar agora)
+        pedidoService.atualizarQuantidadeItem(idDoItem, novaQuantidade);
+
+        // 2. Redireciona o usuário DE VOLTA para o checkout
+        return "redirect:/checkout";
+    }
+
 }

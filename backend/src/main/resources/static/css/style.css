@@ -49,10 +49,9 @@ body {
 .diferenciais {
   list-style: none;
   display: flex;
-  flex-wrap: wrap; /* Garante que os 4 itens caibam ou quebrem a linha */
+  flex-wrap: wrap;
   gap: 2rem;
   padding: 0;
-
 }
 
 /* Estilo do item principal */
@@ -76,32 +75,34 @@ body {
     margin-top: 2rem;
 }
 
-/* Estilo do ícone em si (o círculo colorido) */
+/* Estilo do ícone em si (AGORA SEM O CÍRCULO COLORIDO) */
 .diferencial-item ion-icon {
-    color: #fff;
-    font-size: 1rem;
+    /* REMOVEMOS: width, height, border-radius e background-color */
+
+    /* Defina o tamanho e a cor do ícone sem o fundo. */
+    font-size: 1.5rem; /* Torna o ícone maior e mais visível */
+    color: #343a40; /* Sugestão: Use o roxo escuro da sua marca para os ícones */
+
+    /* Mantenha o flex apenas para garantir que o ícone se comporte bem no layout */
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
 }
 
 /* Cores de Fundo dos Ícones */
+/* REMOVEMOS ESTAS REGRAS, pois não há mais background-color */
 .diferencial-item.roxo ion-icon {
-    background-color: #8047F8;
+    /* background-color: #8047F8; */
 }
 .diferencial-item.amarelo-escuro ion-icon {
-    background-color: #DBAC2C;
+    /* background-color: #DBAC2C; */
 }
 .diferencial-item.cinza-escuro ion-icon {
-    background-color: #574F4D;
+    /* background-color: #574F4D; */
 }
 .diferencial-item.amarelo-claro ion-icon {
-    background-color: #C47F17;
+    /* background-color: #C47F17; */
 }
-
 /* ==== Imagem principal ==== */
 .img-container img {
   width: 450px;
@@ -154,26 +155,6 @@ body {
   margin-top: -3rem;
 }
 
-/* ==== Tags ==== */
-.tags {
-  margin-bottom: 0.5rem;
-}
-
-.tags span {
-  font-size: 0.7rem;
-  font-weight: bold;
-  padding: 0.3rem 0.6rem;
-  border-radius: 20px;
-  margin: 0 0.2rem;
-  color: #fff;
-}
-
-.tag-artesanal { background-color: #8047F8; }
-.tag-picante { background-color: #DBAC2C; }
-.tag-vegetariano { background-color: #C47F17; }
-.tag-acompanhamento { background-color: #574F4D; }
-.tag-bebida { background-color: #00B37E; }
-.tag-sobremesa { background-color: #FF5A8B; }
 
 /* ==== Texto produto ==== */
 .nome-produto {
@@ -181,13 +162,6 @@ body {
   font-size: 1.2rem;
   color: #403937;
   margin-bottom: 0.4rem;
-}
-
-.descricao {
-  color: #8d8686;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  height: 40px;
 }
 
 .preco {
@@ -208,8 +182,8 @@ body {
 
 /* ==== Botão adicionar ==== */
 .btn-adicionar {
-  background-color: #8047F8;
-  color: #fff;
+  background-color: #ffd040;
+  color: #502314;
   border: none;
   border-radius: 8px;
   padding: 0.6rem 1.5rem;
@@ -219,7 +193,7 @@ body {
 }
 
 .btn-adicionar:hover {
-  background-color: #682bd2;
+  background-color: #ffd768;
 }
 
 /* ==== Responsividade ==== */
@@ -276,8 +250,7 @@ main.checkout {
     padding: 40px 60px;
 }
 
-/* ---------- FORMULÁRIO (ESQUERDA) ---------- */
-form {
+#checkout-form {
     background-color: #f3f2f2;
     border-radius: 8px;
     padding: 24px;
@@ -318,9 +291,9 @@ form {
 
 /* ---------- BOTÃO CONFIRMAR ---------- */
 .btn-confirmar {
-    background-color: #dbac2c;
+    background-color: #ffd040;
     border: none;
-    color: #fff;
+    color: #502314;
     font-weight: 700;
     border-radius: 6px;
     padding: 14px;
@@ -330,7 +303,7 @@ form {
 }
 
 .btn-confirmar:hover {
-    background-color: #c69312;
+    background-color: #ffd768;
 }
 
 /* ---------- RESUMO DO PEDIDO ---------- */
@@ -361,9 +334,46 @@ form {
         padding: 20px;
     }
 
-    form, .resumo {
+    /* =======================================================
+      ===> OUTRA CORREÇÃO AQUI <===
+      O seletor antigo 'form, .resumo' foi separado,
+      pois 'form' agora é '#checkout-form'
+      =======================================================
+    */
+    #checkout-form, .resumo {
         width: 90%;
     }
+}
+
+/* =======================================================
+  ===> OS ESTILOS QUE VOCÊ ADICIONOU (Estão corretos) <===
+  =======================================================
+*/
+.acoes-item {
+  display: flex;         /* 1. Transforma a "caixa-mãe" em um container flexível (alinha os filhos em linha) */
+  align-items: center;   /* 2. Alinha os filhos verticalmente (para o botão e o input ficarem rentes) */
+  gap: 0.5rem;           /* 3. Adiciona um pequeno espaço entre o input e o botão */
+}
+
+/* Isso é um bônus para o input de quantidade não ficar gigante */
+.input-quantidade {
+  width: 60px; /* Define uma largura fixa para o campo de número */
+  text-align: center;
+  height: 36px; /* Ajuste a altura se necessário */
+  border: 1px solid #e6e5e5;
+  border-radius: 6px;
+  background-color: #ededed;
+}
+
+.btn-remover {
+    /* (Seu botão remover pode precisar de estilo também,
+       mas vamos focar no alinhamento primeiro) */
+    background-color: #ffd040;
+    color: #502314;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
 }
 /* ==== FIM PAGINA CHECKOUT ==== */
 
@@ -409,7 +419,7 @@ body {
     font-family: 'Baloo 2', cursive;
     font-size: 2rem;
     font-weight: 800;
-    color: #C47F17;
+    color: #c47f17;
     margin: 0;
 }
 
@@ -450,33 +460,11 @@ body {
     color: white;
 }
 
-/* Ícones (cores e símbolos genéricos) */
-.local {
-    background-color: #8047F8;
-    content: url('https://cdn-icons-png.flaticon.com/512/684/684908.png');
-    width: 20px;
-    height: 20px;
-}
-
-.tempo {
-    background-color: #DBAC2C;
-    content: url('https://cdn-icons-png.flaticon.com/512/2088/2088617.png');
-    width: 20px;
-    height: 20px;
-}
-
-.pagamento {
-    background-color: #C47F17;
-    content: url('https://cdn-icons-png.flaticon.com/512/3523/3523885.png');
-    width: 20px;
-    height: 20px;
-}
-
 /* Botão Voltar */
 .botao-voltar {
     margin-top: 2rem;
-    background-color: #8047F8;
-    color: white;
+    background-color: #ffd040;
+    color: #502314;
     padding: 0.75rem 2rem;
     border-radius: 6px;
     text-decoration: none;
@@ -486,7 +474,7 @@ body {
 }
 
 .botao-voltar:hover {
-    background-color: #682ed0;
+    background-color: #ffd768;
 }
 
 /* Imagem à direita */
@@ -528,7 +516,7 @@ body {
 
 /* O container de 100% da largura, com o fundo escuro/roxo */
 .container-cabecalho {
-    background-color: #4d2a9f; /* Roxo escuro */
+    background-color: #502314; /* Amarelo (Gold) */
     padding: 1.5rem 0;
 }
 
@@ -547,10 +535,22 @@ body {
     font-family: 'Baloo 2', cursive;
     font-size: 1.5rem;
     font-weight: 700;
-    color: #fff; /* Cor branca no fundo roxo */
-    text-decoration: none; /* Remove sublinhado se for um link */
+    color: #f5ebdc; /* Cor branca no fundo roxo */
     margin: 0;
     line-height: 1;
+    text-decoration: none;
+}
+
+/* Adicione esta nova regra */
+.logo-link {
+    text-decoration: none; /* Remove o sublinhado do link */
+}
+
+/* Garante que o sublinhado não apareça em NENHUM estado */
+.logo-link:hover,
+.logo-link:active,
+.logo-link:visited {
+    text-decoration: none;
 }
 
 /* O container da direita (localização + carrinho) */
@@ -565,7 +565,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #8047F8; /* Fundo roxo mais claro */
+    background-color: #FFD040; /* Fundo roxo mais claro */
     padding: 0.6rem;
     border-radius: 6px;
 }
@@ -573,12 +573,12 @@ body {
 /* Estilo para o texto da localização */
 .location span {
     font-weight: 500;
-    color: #fff;
+    color: #502314;
 }
 
 /* Estilo para o ícone de localização (Ionicons) */
 .location ion-icon {
-    color: #fff;
+    color: #502314;
     font-size: 1.2rem;
 }
 
@@ -587,13 +587,13 @@ body {
     display: flex;
     align-items: center;
     padding: 0.6rem;
-    background-color: #fff7e5; /* Fundo amarelo muito claro */
+    background-color: #FFD040; /* Fundo amarelo muito claro */
     border-radius: 6px;
     text-decoration: none;
 }
 
 /* Estilo para o ícone do carrinho (Ionicons) */
 .cart-btn ion-icon {
-    color: #DBAC2C; /* Cor amarela principal para o ícone */
+    color: #502314; /* Cor amarela principal para o ícone */
     font-size: 1.2rem;
 }
