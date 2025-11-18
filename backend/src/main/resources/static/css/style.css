@@ -40,44 +40,69 @@ body {
   margin-bottom: 2rem;
 }
 
+.container .texto {
+    max-width: 600px;
+}
+
 /* ==== Lista de diferenciais ==== */
+
 .diferenciais {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 2rem;
+  padding: 0;
 }
 
-.diferenciais li {
+/* Estilo do item principal */
+.diferencial-item {
+  width: calc(50% - 1rem);
+  flex-shrink: 0;
+  flex-grow: 0;
+
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  color: #574f4d;
+  font-weight: 400;
   font-size: 0.95rem;
-  color: #333;
-  font-weight: 500;
+
 }
 
-/* Ícones e cores */
-.localizacao::before {
-  content: "🛒";
-  color: #8047F8;
+.diferenciais-container {
+    /* Limita a largura para caber sob o texto principal e centraliza o bloco */
+    width: 100%;
+    margin-top: 2rem;
 }
 
-.tempo::before {
-  content: "⏱️";
-  color: #DBAC2C;
+/* Estilo do ícone em si (AGORA SEM O CÍRCULO COLORIDO) */
+.diferencial-item ion-icon {
+    /* REMOVEMOS: width, height, border-radius e background-color */
+
+    /* Defina o tamanho e a cor do ícone sem o fundo. */
+    font-size: 1.5rem; /* Torna o ícone maior e mais visível */
+    color: #343a40; /* Sugestão: Use o roxo escuro da sua marca para os ícones */
+
+    /* Mantenha o flex apenas para garantir que o ícone se comporte bem no layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.caixa::before {
-  content: "📦";
-  color: #574F4D;
+/* Cores de Fundo dos Ícones */
+/* REMOVEMOS ESTAS REGRAS, pois não há mais background-color */
+.diferencial-item.roxo ion-icon {
+    /* background-color: #8047F8; */
 }
-
-.hamburguer::before {
-  content: "🍔";
-  color: #C47F17;
+.diferencial-item.amarelo-escuro ion-icon {
+    /* background-color: #DBAC2C; */
 }
-
+.diferencial-item.cinza-escuro ion-icon {
+    /* background-color: #574F4D; */
+}
+.diferencial-item.amarelo-claro ion-icon {
+    /* background-color: #C47F17; */
+}
 /* ==== Imagem principal ==== */
 .img-container img {
   width: 450px;
@@ -122,33 +147,14 @@ body {
   box-shadow: 0 5px 18px rgba(0,0,0,0.08);
 }
 
-.img-produto {
-  width: 120px;
-  height: 120px;
+.imagem-produto {
+  width: 100%;
+  max-height: 200px;
   object-fit: contain;
   margin-bottom: 1rem;
+  margin-top: -3rem;
 }
 
-/* ==== Tags ==== */
-.tags {
-  margin-bottom: 0.5rem;
-}
-
-.tags span {
-  font-size: 0.7rem;
-  font-weight: bold;
-  padding: 0.3rem 0.6rem;
-  border-radius: 20px;
-  margin: 0 0.2rem;
-  color: #fff;
-}
-
-.tag-artesanal { background-color: #8047F8; }
-.tag-picante { background-color: #DBAC2C; }
-.tag-vegetariano { background-color: #C47F17; }
-.tag-acompanhamento { background-color: #574F4D; }
-.tag-bebida { background-color: #00B37E; }
-.tag-sobremesa { background-color: #FF5A8B; }
 
 /* ==== Texto produto ==== */
 .nome-produto {
@@ -158,13 +164,6 @@ body {
   margin-bottom: 0.4rem;
 }
 
-.descricao {
-  color: #8d8686;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  height: 40px;
-}
-
 .preco {
   font-weight: bold;
   color: #272221;
@@ -172,10 +171,19 @@ body {
   margin-bottom: 1rem;
 }
 
+/* Mudando regra do .produto */
+.produto form {
+    /* Define o formulário para ocupar apenas o espaço do seu conteúdo */
+    width: fit-content;
+    /* Centraliza o formulário dentro do card do produto */
+    margin: 0 auto;
+    margin-bottom: 0.5rem; /* Opcional: para dar um pequeno espaço inferior */
+}
+
 /* ==== Botão adicionar ==== */
 .btn-adicionar {
-  background-color: #8047F8;
-  color: #fff;
+  background-color: #ffd040;
+  color: #502314;
   border: none;
   border-radius: 8px;
   padding: 0.6rem 1.5rem;
@@ -185,7 +193,7 @@ body {
 }
 
 .btn-adicionar:hover {
-  background-color: #682bd2;
+  background-color: #ffd768;
 }
 
 /* ==== Responsividade ==== */
@@ -242,12 +250,6 @@ main.checkout {
     padding: 40px 60px;
 }
 
-/* =======================================================
-  ===> AQUI ESTÁ A CORREÇÃO <===
-  O seletor foi mudado de 'form' para '#checkout-form'
-  para "travar" o estilo SÓ no formulário de endereço.
-  =======================================================
-*/
 #checkout-form {
     background-color: #f3f2f2;
     border-radius: 8px;
@@ -289,9 +291,9 @@ main.checkout {
 
 /* ---------- BOTÃO CONFIRMAR ---------- */
 .btn-confirmar {
-    background-color: #dbac2c;
+    background-color: #ffd040;
     border: none;
-    color: #fff;
+    color: #502314;
     font-weight: 700;
     border-radius: 6px;
     padding: 14px;
@@ -301,7 +303,7 @@ main.checkout {
 }
 
 .btn-confirmar:hover {
-    background-color: #c69312;
+    background-color: #ffd768;
 }
 
 /* ---------- RESUMO DO PEDIDO ---------- */
@@ -366,7 +368,8 @@ main.checkout {
 .btn-remover {
     /* (Seu botão remover pode precisar de estilo também,
        mas vamos focar no alinhamento primeiro) */
-    background: #f0f0f0;
+    background-color: #ffd040;
+    color: #502314;
     border: 1px solid #ccc;
     padding: 0.5rem;
     border-radius: 6px;
@@ -416,7 +419,7 @@ body {
     font-family: 'Baloo 2', cursive;
     font-size: 2rem;
     font-weight: 800;
-    color: #C47F17;
+    color: #c47f17;
     margin: 0;
 }
 
@@ -457,33 +460,11 @@ body {
     color: white;
 }
 
-/* Ícones (cores e símbolos genéricos) */
-.local {
-    background-color: #8047F8;
-    content: url('https://cdn-icons-png.flaticon.com/512/684/684908.png');
-    width: 20px;
-    height: 20px;
-}
-
-.tempo {
-    background-color: #DBAC2C;
-    content: url('https://cdn-icons-png.flaticon.com/512/2088/2088617.png');
-    width: 20px;
-    height: 20px;
-}
-
-.pagamento {
-    background-color: #C47F17;
-    content: url('https://cdn-icons-png.flaticon.com/512/3523/3523885.png');
-    width: 20px;
-    height: 20px;
-}
-
 /* Botão Voltar */
 .botao-voltar {
     margin-top: 2rem;
-    background-color: #8047F8;
-    color: white;
+    background-color: #ffd040;
+    color: #502314;
     padding: 0.75rem 2rem;
     border-radius: 6px;
     text-decoration: none;
@@ -493,7 +474,7 @@ body {
 }
 
 .botao-voltar:hover {
-    background-color: #682ed0;
+    background-color: #ffd768;
 }
 
 /* Imagem à direita */
@@ -529,30 +510,47 @@ body {
 
 
 /* ======================================== */
-/* ======== CSS DO HEADER (Faltando) ======== */
+/* ====== HEADER ====== */
 /* ======================================== */
+
 
 /* O container de 100% da largura, com o fundo escuro/roxo */
 .container-cabecalho {
-    /* Baseado na foto, o fundo é um roxo, não preto */
-    background-color: #4d2a9f;
+    background-color: #502314; /* Amarelo (Gold) */
     padding: 1.5rem 0;
-    color: #f9f9fb; /* Cor de texto clara para "Brasília, DF" */
 }
 
-/* Esta é a correção mais IMPORTANTE.
-  O .container (do seu style.css) tem uma margem de 4rem.
-  Aqui nós "resetamos" essa margem SÓ para o header.
-*/
+/* O container interno que limita a largura (1200px) e centraliza */
+/* Esta é a correção ESSENCIAL para alinhar logo e botões */
 .container.cabecalho {
-    margin: 0 auto; /* Remove a margem de 4rem e mantém o 'max-width: 1200px' */
-    padding: 0 2rem; /* Adiciona o padding que foi resetado pelo .container original */
+    margin: 0 auto; /* Remove a margem de 4rem do .container geral */
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Alinha a logo à esquerda e as ações à direita */
 }
 
-/* Deixa a logo com um tamanho razoável */
-.logo {
-    max-height: 40px;
-    width: auto;
+/* Estilo para a logo de TEXTO (Substituindo a imagem) */
+.logo-text {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f5ebdc; /* Cor branca no fundo roxo */
+    margin: 0;
+    line-height: 1;
+    text-decoration: none;
+}
+
+/* Adicione esta nova regra */
+.logo-link {
+    text-decoration: none; /* Remove o sublinhado do link */
+}
+
+/* Garante que o sublinhado não apareça em NENHUM estado */
+.logo-link:hover,
+.logo-link:active,
+.logo-link:visited {
+    text-decoration: none;
 }
 
 /* O container da direita (localização + carrinho) */
@@ -567,20 +565,21 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    /* O fundo na foto é um roxo mais claro */
-    background-color: #8047F8;
+    background-color: #FFD040; /* Fundo roxo mais claro */
     padding: 0.6rem;
     border-radius: 6px;
 }
 
-.location .ph-map-pin {
-    color: #fff; /* O ícone na foto é branco */
-    font-size: 1.2rem;
-}
-
+/* Estilo para o texto da localização */
 .location span {
     font-weight: 500;
-    color: #fff; /* O texto também é branco */
+    color: #502314;
+}
+
+/* Estilo para o ícone de localização (Ionicons) */
+.location ion-icon {
+    color: #502314;
+    font-size: 1.2rem;
 }
 
 /* O botão do carrinho */
@@ -588,11 +587,13 @@ body {
     display: flex;
     align-items: center;
     padding: 0.6rem;
-    background-color: #fff7e5; /* Fundo amarelo claro */
+    background-color: #FFD040; /* Fundo amarelo muito claro */
     border-radius: 6px;
+    text-decoration: none;
 }
 
-.cart-btn .ph-shopping-cart {
-    color: #DBAC2C; /* Cor amarela principal para o ícone */
+/* Estilo para o ícone do carrinho (Ionicons) */
+.cart-btn ion-icon {
+    color: #502314; /* Cor amarela principal para o ícone */
     font-size: 1.2rem;
 }
